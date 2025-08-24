@@ -51,6 +51,12 @@ File: `backend/postman_collection.json`
 - Backend: `src/server.js`, `src/socket.js`, `src/routes.js`, `src/store.js`
 - Frontend: komponen utama di `src/App.jsx`
 
+### Dockerize 
+- menggunakan docker-compose.yml
+- Backend: backend/DockerFile
+- Frontend: fronend/DockerFile
+- Run: docker-compose up -d --build
+
 ### Build Project
 ```
 cd frontend && npm run build
