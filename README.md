@@ -3,6 +3,9 @@
 ### Ringkasan
 Proyek ini adalah aplikasi chat real-time sederhana dengan backend Node.js (Express + Socket.IO) dan frontend React + Tailwind. Mendukung multi-user, daftar online, pesan real-time, timestamp, nama pengirim, dan history. Fitur tambahan: typing indicator, notifikasi reconnect, dan rate limiting sederhana.
 
+### URL DEMO
+- https://realtime-chat-demo.musepedia.space
+
 ### Struktur Proyek
 ```
 backend/      # Express + Socket.IO + REST
