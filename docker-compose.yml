@@ -1,0 +1,26 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - PORT=2001
+    ports:
+      - "2001:2001"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_WS_URL: http://localhost:2001
+    environment:
+      - VITE_WS_URL=http://localhost:2001
+    ports:
+      - "2002:2002"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+

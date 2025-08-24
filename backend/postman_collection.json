@@ -1,0 +1,70 @@
+{
+  "info": {
+    "name": "Realtime Chat Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection untuk API REST backend chat"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/health",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "api",
+            "health"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Users Online",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/users/online",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "online"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Messages (limit=100)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/messages?limit=100",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "api",
+            "messages"
+          ],
+          "query": [
+            { "key": "limit", "value": "100" }
+          ]
+        }
+      }
+    }
+  ],
+  "event": [],
+  "variable": [
+    { "key": "BASE_URL", "value": "http://localhost:4000" }
+  ]
+}
+
+
