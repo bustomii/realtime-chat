@@ -1,4 +1,5 @@
-FROM public.ecr.aws/docker/library/node:20-alpine AS build
+ARG BASE_IMAGE=node:20-alpine
+FROM ${BASE_IMAGE} AS build
 
 WORKDIR /app
 
@@ -10,7 +11,7 @@ ARG VITE_WS_URL=http://localhost:2001
 ENV VITE_WS_URL=${VITE_WS_URL}
 RUN npm run build
 
-FROM public.ecr.aws/docker/library/node:20-alpine AS runner
+FROM ${BASE_IMAGE} AS runner
 WORKDIR /app
 
 # Serve menggunakan vite preview agar mudah

@@ -17,7 +17,7 @@ export function registerSocketHandlers(io) {
 		socket.on("join", (payload, callback) => {
 			const { username } = payload || {};
 			if (!username || typeof username !== "string") {
-				return callback?.({ ok: false, error: "USERNAME_REQUIRED" });
+				return callback?.({ ok: false, error: "Username is required" });
 			}
 			addUser(socket.id, username);
 			joined = true;
@@ -32,11 +32,11 @@ export function registerSocketHandlers(io) {
 		socket.on("message", (payload, callback) => {
 			const { text } = payload || {};
 			const username = getUsernameBySocketId(socket.id);
-			if (!joined || !username) return callback?.({ ok: false, error: "NOT_JOINED" });
-			if (!text || typeof text !== "string") return callback?.({ ok: false, error: "TEXT_REQUIRED" });
+			if (!joined || !username) return callback?.({ ok: false, error: "You are not joined" });
+			if (!text || typeof text !== "string") return callback?.({ ok: false, error: "Text is required" });
 			const now = Date.now();
 			while (timestamps.length && now - timestamps[0] > 3000) timestamps.shift();
-			if (timestamps.length >= 5) return callback?.({ ok: false, error: "RATE_LIMITED" });
+			if (timestamps.length >= 5) return callback?.({ ok: false, error: "Please wait 3 seconds before sending another message" });
 			timestamps.push(now);
 			const msg = createUserMessage(username, String(text).slice(0, 1000));
 			addMessage(msg);

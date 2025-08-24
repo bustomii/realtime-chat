@@ -3,6 +3,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        BASE_IMAGE: ${BASE_IMAGE:-node:20-alpine}
     environment:
       - PORT=2001
     ports:
@@ -15,6 +17,7 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_WS_URL: ${WS_URL:-http://localhost:2001}
+        BASE_IMAGE: ${BASE_IMAGE:-node:20-alpine}
     environment:
       - VITE_WS_URL=${WS_URL:-http://localhost:2001}
     ports:
