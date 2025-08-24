@@ -41,12 +41,12 @@
       }
     },
     {
-      "name": "Messages (limit=100)",
+      "name": "Messages (room=general&limit=100)",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{BASE_URL}}/api/messages?limit=100",
+          "raw": "{{BASE_URL}}/api/messages?room=general&limit=100",
           "host": [
             "{{BASE_URL}}"
           ],
@@ -55,7 +55,25 @@
             "messages"
           ],
           "query": [
+            { "key": "room", "value": "general" },
             { "key": "limit", "value": "100" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Rooms",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/get-rooms",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "api",
+            "get-rooms"
           ]
         }
       }

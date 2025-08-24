@@ -8,8 +8,10 @@ import OnlineList from './components/OnlineList'
 
 const WS_URL = import.meta.env.VITE_WS_URL || 'http://localhost:4000'
 
-function Login({ onJoin }) {
+function Login({ onJoin, rooms }) {
   const [username, setUsername] = useState('')
+  const [room, setRoom] = useState(null)
+  const [addRoom, setAddRoom] = useState(false)
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-sm rounded-lg border p-6 space-y-4">
@@ -19,10 +21,38 @@ function Login({ onJoin }) {
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Username"
           className="w-full border rounded-md h-10 px-3"
-          onKeyDown={(e) => e.key === 'Enter' && username.trim() && onJoin(username.trim())}
+          onKeyDown={(e) => e.key === 'Enter' && username.trim() && onJoin({ username: username.trim(), room: room.trim() || 'general' })}
         />
+        {/* room name use select */}
+        <select
+          value={addRoom ? 'add-room' : room}
+          onChange={(e) => {
+            if (e.target.value === 'add-room') {
+              setAddRoom(true)
+            } else {
+              setRoom(e.target.value)
+              setAddRoom(false)
+            }
+          }}
+          className="w-full border rounded-md h-10 px-3"
+        >
+          <option value="">Select Room</option>
+          <option value="add-room">Add new room</option>
+          {rooms.map((r) => (
+            <option key={r} value={r}>{r}</option>
+          ))}
+        </select>
+        {addRoom && (
+          <input
+            value={room}
+            onChange={(e) => setRoom(e.target.value)}
+            placeholder="Room (mis. general)"
+            className="w-full border rounded-md h-10 px-3"
+            onKeyDown={(e) => e.key === 'Enter' && username.trim() && onJoin({ username: username.trim(), room: room.trim() || 'general' })}
+          />
+        )}
         <button
-          onClick={() => username.trim() && onJoin(username.trim())}
+          onClick={() => username.trim() && onJoin({ username: username.trim(), room: room.trim() || 'general' })}
           className="w-full h-10 rounded-md bg-black text-white"
         >
           Join
@@ -32,7 +62,7 @@ function Login({ onJoin }) {
   )
 }
 
-function Chat({ username }) {
+function Chat({ username, room }) {
   const socket = useMemo(() => io(WS_URL, { autoConnect: false }), [])
   const [online, setOnline] = useState([])
   const [messages, setMessages] = useState([])
@@ -46,7 +76,7 @@ function Chat({ username }) {
     socket.on('connect', () => setConnected(true))
     socket.on('disconnect', () => setConnected(false))
 
-    socket.emit('join', { username }, (res) => {
+    socket.emit('join', { username, room }, (res) => {
       if (res?.ok) {
         setMessages(res.history || [])
       } else {
@@ -95,10 +125,12 @@ function Chat({ username }) {
       <OnlineList users={online} />
       <main className="flex-1 flex flex-col">
         <header className="border-b p-4 flex items-center justify-between bg-white/70 backdrop-blur">
-          <div className="font-semibold">Real-time Messaging</div>
-          <div className="text-sm">{connected ? 'Terhubung' : 'Terputus'}</div>
+          <div className="font-semibold">
+            <span className="text-blue-500">{room}</span>
+          </div>
+          <div className={`text-xs py-1 px-2 rounded-md ${connected ? 'bg-green-500' : 'bg-red-500'} text-white`}>{connected ? 'Connected' : 'Disconnected'}</div>
         </header>
-        <div className="px-4 py-4 text-xs h-4 flex items-center justify-center text-blue-500">
+        <div className="px-4 py-4 text-xs h-4 flex items-center justify-center">
           {Object.keys(typingUsers).length > 0 && (
             <span>{Object.keys(typingUsers).join(', ')} sedang mengetik...</span>
           )}
@@ -112,7 +144,18 @@ function Chat({ username }) {
 }
 
 export default function App() {
-  const [username, setUsername] = useState('')
-  if (!username) return <Login onJoin={setUsername} />
-  return <Chat username={username} />
+  const [session, setSession] = useState(null)
+  const [rooms, setRooms] = useState([])
+
+  useEffect(() => {
+    fetch(`${WS_URL}/api/get-rooms`)
+      .then(res => res.json())
+      .then(({ rooms }) => setRooms(rooms || []))
+      .catch(err => {
+        console.error(err)
+        toast.error('Gagal ambil room')
+      })
+  }, [])
+  if (!session) return <Login onJoin={setSession} rooms={rooms} />
+  return <Chat username={session.username} room={session.room} />
 }

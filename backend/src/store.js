@@ -30,11 +30,18 @@ export function removeUser(socketId) {
 	return user;
 }
 
-export function getOnlineUsers() {
-	return Array.from(state.usersBySocketId.values()).map((u) => ({
-		id: u.socketId,
-		username: u.username,
-	}));
+export function getOnlineUsers(room) {
+	const users = Array.from(state.usersBySocketId.values())
+		.filter((u) => u.room === room)
+		.map((u) => ({
+			id: u.socketId,
+			username: u.username,
+			room: u.room,
+		}));
+
+	return users.filter((u, index, self) =>
+		index === self.findIndex((t) => t.username === u.username)
+	);
 }
 
 export function isUsernameTaken(username) {
@@ -74,6 +81,13 @@ export function getUsernameBySocketId(socketId) {
 	return u ? u.username : undefined;
 }
 
+export function setUserRoom(socketId, room) {
+	const user = state.usersBySocketId.get(socketId);
+	if (user) {
+		state.usersBySocketId.set(socketId, { ...user, room });
+	}
+}
+
 export function clearAll() {
 	state.usersBySocketId.clear();
 	state.usernames.clear();
@@ -85,6 +99,7 @@ export default {
 	addUser,
 	removeUser,
 	getOnlineUsers,
+	setUserRoom,
 	isUsernameTaken,
 	addMessage,
 	getMessages,

@@ -7,6 +7,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import router from "./routes.js";
 import { registerSocketHandlers } from "./socket.js";
+import { migrate } from "./db.js";
 
 const app = express();
 app.use(cors());
@@ -30,6 +31,10 @@ const io = new SocketIOServer(server, {
 });
 
 registerSocketHandlers(io);
+
+migrate().catch((e) => {
+	console.error(e);
+});
 
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
