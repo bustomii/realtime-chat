@@ -55,7 +55,7 @@ File: `backend/postman_collection.json`
 - menggunakan docker-compose.yml
 - Backend: backend/DockerFile
 - Frontend: fronend/DockerFile
-- Run: docker-compose up -d --build
+- Run: WS_URL=http://host-backend:port docker compose build --no-cache && docker compose up -d
 
 ### Build Project
 ```
